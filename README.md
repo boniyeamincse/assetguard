@@ -1,6 +1,9 @@
 # AssetGuard
-Cybersecurity Asset, Bug & Vulnerability Tracking System
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+![Python 3.12](https://img.shields.io/badge/Python-3.12+-green.svg)
+![Django 5.x](https://img.shields.io/badge/Django-5.x-092E20.svg)
 
+Cybersecurity Asset, Bug & Vulnerability Tracking System
 ## Overview
 AssetGuard is a comprehensive web-based platform for managing cybersecurity assets, vulnerabilities, and bug tracking. It enables security teams to report vulnerabilities, track remediation progress, and manage retest workflows across multiple assets.
 
@@ -340,10 +343,13 @@ Refer to:
 - [Bootstrap 5 Documentation](https://getbootstrap.com/docs/5.0/)
 - Project specification (docs/specification.md)
 
+## Contributing
+
+We welcome contributions from the open-source community! If you'd like to help improve AssetGuard, please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
 ## License
 
-This project is proprietary and confidential.
-
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 ## Version
 
 **AssetGuard v2.0**
