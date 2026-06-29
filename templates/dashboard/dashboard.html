@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - AssetGuard{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-title">Dashboard</div>
+
+<div class="row g-4">
+    <div class="col-md-4 col-lg-2">
+        <div class="stat-card">
+            <i class="fas fa-server text-primary mb-2" style="font-size: 1.5rem;"></i>
+            <div class="number">{{ total_assets }}</div>
+            <div class="label">Total Assets</div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-2">
+        <div class="stat-card">
+            <i class="fas fa-bug text-danger mb-2" style="font-size: 1.5rem;"></i>
+            <div class="number">{{ total_vulnerabilities }}</div>
+            <div class="label">Total Vulns</div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-2">
+        <div class="stat-card" style="border-bottom: 4px solid var(--critical);">
+            <i class="fas fa-exclamation-triangle text-danger mb-2" style="font-size: 1.5rem;"></i>
+            <div class="number" style="color: var(--critical);">{{ critical_open }}</div>
+            <div class="label">Critical Open</div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-2">
+        <div class="stat-card" style="border-bottom: 4px solid var(--high);">
+            <i class="fas fa-fire text-warning mb-2" style="font-size: 1.5rem;"></i>
+            <div class="number" style="color: var(--high);">{{ high_open }}</div>
+            <div class="label">High Open</div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-2">
+        <div class="stat-card" style="border-bottom: 4px solid var(--medium);">
+            <i class="fas fa-radiation mb-2" style="font-size: 1.5rem; color: var(--medium);"></i>
+            <div class="number" style="color: var(--medium);">{{ medium_open }}</div>
+            <div class="label">Medium Open</div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-2">
+        <div class="stat-card" style="border-bottom: 4px solid var(--low);">
+            <i class="fas fa-leaf text-success mb-2" style="font-size: 1.5rem;"></i>
+            <div class="number" style="color: var(--low);">{{ low_open }}</div>
+            <div class="label">Low Open</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-2">
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card" style="background: linear-gradient(145deg, #eff6ff, #dbeafe); border-bottom: 4px solid #3b82f6;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="number" style="color: #1e3a8a;">{{ retest_pending }}</div>
+                    <div class="label" style="color: #3b82f6;">Retest Pending</div>
+                </div>
+                <i class="fas fa-sync-alt fa-spin" style="font-size: 2.5rem; color: rgba(59,130,246,0.2);"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card" style="background: linear-gradient(145deg, #fff1f2, #ffe4e6); border-bottom: 4px solid #e11d48;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="number" style="color: #881337;">{{ overdue }}</div>
+                    <div class="label" style="color: #e11d48;">Overdue</div>
+                </div>
+                <i class="fas fa-clock" style="font-size: 2.5rem; color: rgba(225,29,72,0.2);"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card" style="background: linear-gradient(145deg, #f0fdf4, #dcfce7); border-bottom: 4px solid #16a34a;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="number" style="color: #14532d;">{{ closed }}</div>
+                    <div class="label" style="color: #16a34a;">Closed</div>
+                </div>
+                <i class="fas fa-check-circle" style="font-size: 2.5rem; color: rgba(22,163,74,0.2);"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card" style="background: linear-gradient(145deg, #f8fafc, #f1f5f9); border-bottom: 4px solid #64748b;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="number" style="color: #334155;">{{ risk_accepted }}</div>
+                    <div class="label" style="color: #64748b;">Risk Accepted</div>
+                </div>
+                <i class="fas fa-shield-virus" style="font-size: 2.5rem; color: rgba(100,116,139,0.2);"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-2">
+    <div class="col-md-6">
+        <div class="glass-card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title"><i class="fas fa-bolt text-warning me-2"></i>Recent Vulnerabilities</h5>
+                <a href="{% url 'vulnerabilities:vulnerability_list' %}" class="btn btn-sm btn-light rounded-pill px-3">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-uppercase text-secondary" style="font-size: 0.75rem; letter-spacing: 0.5px;">Code</th>
+                                <th class="text-uppercase text-secondary" style="font-size: 0.75rem; letter-spacing: 0.5px;">Title</th>
+                                <th class="text-uppercase text-secondary" style="font-size: 0.75rem; letter-spacing: 0.5px;">Severity</th>
+                                <th class="text-uppercase text-secondary" style="font-size: 0.75rem; letter-spacing: 0.5px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vuln in recent_vulnerabilities %}
+                            <tr>
+                                <td class="ps-3"><a href="{% url 'vulnerabilities:vulnerability_detail' vuln.pk %}" class="fw-bold text-decoration-none">{{ vuln.vulnerability_code }}</a></td>
+                                <td>{{ vuln.title|truncatewords:5 }}</td>
+                                <td><span class="badge badge-{{ vuln.severity }} rounded-pill">{{ vuln.get_severity_display }}</span></td>
+                                <td><span class="badge bg-light text-dark border">{{ vuln.get_status_display }}</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4"><i class="fas fa-inbox fa-2x mb-2 text-light"></i><br>No vulnerabilities yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="glass-card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title"><i class="fas fa-chart-bar text-danger me-2"></i>Top Risky Assets</h5>
+                <a href="{% url 'assets:asset_list' %}" class="btn btn-sm btn-light rounded-pill px-3">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-uppercase text-secondary" style="font-size: 0.75rem; letter-spacing: 0.5px;">Asset</th>
+                                <th class="text-uppercase text-secondary" style="font-size: 0.75rem; letter-spacing: 0.5px;">Type</th>
+                                <th class="text-uppercase text-secondary" style="font-size: 0.75rem; letter-spacing: 0.5px;">Criticality</th>
+                                <th class="text-uppercase text-secondary" style="font-size: 0.75rem; letter-spacing: 0.5px;">Vulns</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for asset in top_risky_assets %}
+                            <tr>
+                                <td class="ps-3"><a href="{% url 'assets:asset_detail' asset.pk %}" class="fw-bold text-decoration-none"><i class="fas fa-desktop text-muted me-2"></i>{{ asset.asset_code }}</a></td>
+                                <td>{{ asset.get_asset_type_display }}</td>
+                                <td><span class="badge badge-{{ asset.criticality }} rounded-pill">{{ asset.get_criticality_display }}</span></td>
+                                <td><span class="badge bg-danger rounded-pill">{{ asset.get_vulnerability_count }}</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4"><i class="fas fa-inbox fa-2x mb-2 text-light"></i><br>No assets yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-2 mb-4">
+    <div class="col-md-5">
+        <div class="glass-card h-100 text-center p-4">
+            {% if user.profile_picture %}
+            <div style="width: 96px; height: 96px; margin: 0 auto 20px auto; border-radius: 50%; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4); border: 4px solid white; overflow: hidden; background-color: #f8fafc;">
+                <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            {% else %}
+            <div style="width: 96px; height: 96px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); border-radius: 50%; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 36px; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4); border: 4px solid white;">
+                {{ user.first_name|first|default:user.username|first|upper }}
+            </div>
+            {% endif %}
+            <h4 class="fw-bold mb-1" style="color: #0f172a;">{{ user.get_full_name|default:user.username }}</h4>
+            <p class="text-muted mb-3">{{ user.email }}</p>
+            
+            <div class="d-flex justify-content-center gap-2 mb-4">
+                <span class="badge bg-primary px-3 py-2 rounded-pill"><i class="fas fa-shield-alt me-1"></i> {{ user.get_role_display }}</span>
+                {% if user.department %}
+                <span class="badge bg-secondary px-3 py-2 rounded-pill"><i class="fas fa-building me-1"></i> {{ user.department }}</span>
+                {% endif %}
+                <span class="badge bg-success px-3 py-2 rounded-pill"><i class="fas fa-check me-1"></i> {{ user.get_status_display }}</span>
+            </div>
+            
+            <div class="d-flex justify-content-center gap-2 mt-4">
+                <a href="{% url 'accounts:profile' %}" class="btn btn-outline-primary rounded-pill px-4"><i class="fas fa-user-edit me-1"></i> Edit Profile</a>
+                <a href="{% url 'accounts:change_password' %}" class="btn btn-outline-warning rounded-pill px-4"><i class="fas fa-key me-1"></i> Security</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="glass-card h-100 p-4" style="background: linear-gradient(to right bottom, #ffffff, #f8fafc);">
+            <h5 class="fw-bold mb-4" style="color: #0f172a;"><i class="fas fa-server text-primary me-2"></i> System Intelligence</h5>
+            
+            <div class="row g-4">
+                <div class="col-sm-6">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="text-muted small text-uppercase fw-bold mb-1">Application Version</div>
+                        <div class="fw-bold text-dark fs-5">AssetGuard v2.0 <span class="badge bg-success ms-2" style="font-size: 0.6rem; vertical-align: middle;">STABLE</span></div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="text-muted small text-uppercase fw-bold mb-1">Database Engine</div>
+                        <div class="fw-bold text-dark fs-5">PostgreSQL-ready <i class="fas fa-database text-muted ms-2"></i></div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="text-muted small text-uppercase fw-bold mb-1">Last Login Session</div>
+                        <div class="fw-bold text-dark">{{ user.last_login|default:"First login" }}</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="text-muted small text-uppercase fw-bold mb-1">Account Created</div>
+                        <div class="fw-bold text-dark">{{ user.date_joined|date:"M d, Y" }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert bg-primary text-white border-0 d-flex align-items-center mt-4 mb-0 rounded-3 shadow-sm">
+                <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                    <i class="fas fa-shield-check fa-lg"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold">Active Logging Enabled</h6>
+                    <small style="opacity: 0.9;">All platform actions are securely logged for compliance audits.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

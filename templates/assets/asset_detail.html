@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ asset.asset_code }} - AssetGuard{% endblock %}
+
+{% block page_title %}Asset Details{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 class="page-title">{{ asset.asset_code }} - {{ asset.asset_name }}</h2>
+    <div>
+        <a href="{% url 'assets:asset_edit' asset.pk %}" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
+        <a href="{% url 'assets:asset_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Asset Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <label><strong>Domain:</strong></label>
+                    <p>{{ asset.domain|default:"Not specified" }}</p>
+                </div>
+                <div class="mb-2">
+                    <label><strong>Request ID:</strong></label>
+                    <p>{{ asset.request_id|default:"Not specified" }}</p>
+                </div>
+                <div class="mb-2">
+                    <label><strong>Asset Type:</strong></label>
+                    <p>{{ asset.get_asset_type_display }}</p>
+                </div>
+                <div class="mb-2">
+                    <label><strong>Criticality:</strong></label>
+                    <p><span class="badge badge-{{ asset.criticality }}">{{ asset.get_criticality_display }}</span></p>
+                </div>
+                <div class="mb-2">
+                    <label><strong>Status:</strong></label>
+                    <p>{{ asset.get_status_display }}</p>
+                </div>
+                <div class="mb-2">
+                    <label><strong>Description:</strong></label>
+                    <p>{{ asset.description|default:"No description" }}</p>
+                </div>
+                <div class="mb-2">
+                    <label><strong>Business Owner:</strong></label>
+                    <p>{{ asset.business_owner|default:"Not specified" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Bug / Vulnerability Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <label><strong>Total Bugs:</strong></label>
+                    <p>{{ asset.get_vulnerability_count }}</p>
+                </div>
+                <div class="mb-2">
+                    <label><strong>Open Bugs:</strong></label>
+                    <p>{{ asset.get_open_vulnerability_count }}</p>
+                </div>
+                <div class="mb-2">
+                    <label><strong>Critical Bugs:</strong></label>
+                    <p><span class="badge badge-critical">{{ asset.get_critical_vulnerability_count }}</span></p>
+                </div>
+                <div class="mb-2">
+                    <label><strong>Risk Score:</strong></label>
+                    <p><strong>{{ asset.calculate_risk_score }}</strong></p>
+                </div>
+                <div class="mb-2">
+                    <label><strong>Risk Rating:</strong></label>
+                    <p>{{ asset.get_risk_rating }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="margin-top: 20px;">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Bug List</h5>
+                <a href="{% url 'assets:asset_bug_create' asset.pk %}" class="btn btn-sm btn-danger"><i class="fas fa-plus"></i> Create Bug</a>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Title</th>
+                            <th>Severity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vuln in asset.vulnerabilities.all %}
+                        <tr>
+                            <td>{{ vuln.vulnerability_code }}</td>
+                            <td>{{ vuln.title|truncatewords:8 }}</td>
+                            <td><span class="badge badge-{{ vuln.severity }}">{{ vuln.get_severity_display }}</span></td>
+                            <td>{{ vuln.get_status_display }}</td>
+                            <td><a href="{% url 'vulnerabilities:vulnerability_detail' vuln.pk %}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No vulnerabilities for this asset</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

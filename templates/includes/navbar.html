@@ -1,0 +1,149 @@
+<div class="navbar d-flex justify-content-between align-items-center">
+    <div class="navbar-brand">
+        <h5 style="margin: 0; color: #0f172a; font-weight: 700; letter-spacing: -0.5px;">{% block page_title %}Dashboard{% endblock %}</h5>
+    </div>
+    <div class="navbar-actions d-flex align-items-center gap-2">
+        <!-- Notifications -->
+        <a href="{% url 'notifications:notification_list' %}" class="btn btn-light btn-sm rounded-circle position-relative navbar-icon-btn" title="Notifications">
+            <i class="fas fa-bell"></i>
+            {% if unread_notifications_count %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; padding: 0.25rem 0.4rem;">
+                {{ unread_notifications_count }}
+            </span>
+            {% endif %}
+        </a>
+
+        <!-- User Menu -->
+        <div class="dropdown">
+            <button class="btn user-dropdown dropdown-toggle d-flex align-items-center gap-2" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if user.profile_picture %}
+                <div style="width: 28px; height: 28px; border-radius: 50%; overflow: hidden; box-shadow: 0 2px 5px rgba(59,130,246,0.3); background-color: #f8fafc;">
+                    <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                {% else %}
+                <div style="width: 28px; height: 28px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px; box-shadow: 0 2px 5px rgba(59,130,246,0.3);">
+                    {{ user.first_name|first|default:user.username|first|upper }}
+                </div>
+                {% endif %}
+                <span style="font-weight: 600; font-size: 0.9rem;">{{ user.get_full_name|default:user.username }}</span>
+                <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 user-menu-dropdown" aria-labelledby="userDropdown">
+                <!-- User Info Header -->
+                <li class="dropdown-header px-3 py-2 bg-light border-bottom">
+                    <div class="d-flex align-items-center gap-2">
+                        {% if user.profile_picture %}
+                        <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background-color: #f8fafc;">
+                            <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        {% else %}
+                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;">
+                            {{ user.first_name|first|default:user.username|first|upper }}
+                        </div>
+                        {% endif %}
+                        <div>
+                            <span class="d-block" style="font-weight: 700; color: #0f172a; font-size: 0.9rem;">{{ user.get_full_name|default:user.username }}</span>
+                            <span class="d-block" style="font-size: 0.75rem; color: #64748b;">{{ user.get_role_display }}</span>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- Status -->
+                <li class="px-3 py-2 border-bottom small">
+                    <span class="text-muted">Status:</span>
+                    <span class="badge {% if user.is_active %}bg-success{% else %}bg-danger{% endif %} ms-2">
+                        {% if user.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                </li>
+
+                <!-- Profile & Account -->
+                <li><a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2" href="{% url 'accounts:profile' %}"><i class="fas fa-user-circle text-primary"></i> My Profile</a></li>
+                <li><a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2" href="{% url 'accounts:change_password' %}"><i class="fas fa-key text-warning"></i> Change Password</a></li>
+                <li><a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2" href="{% url 'notifications:notification_list' %}"><i class="fas fa-bell text-info"></i> Notifications {% if unread_notifications_count %}<span class="badge bg-danger ms-auto">{{ unread_notifications_count }}</span>{% endif %}</a></li>
+
+                <!-- Admin Section (Super Admin Only) -->
+                {% if user.is_super_admin %}
+                <li><hr class="dropdown-divider my-1"></li>
+                <li class="dropdown-header px-3 py-2 text-muted" style="font-size: 0.8rem;">ADMINISTRATION</li>
+                <li><a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2" href="{% url 'accounts:user_list' %}"><i class="fas fa-users-cog text-secondary"></i> Manage Users</a></li>
+                <li><a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2" href="{% url 'teams:team_list' %}"><i class="fas fa-users-cog text-secondary"></i> Manage Teams</a></li>
+                <li><a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2" href="/admin/"><i class="fas fa-cog text-secondary"></i> Admin Panel</a></li>
+                {% endif %}
+
+                <!-- Divider -->
+                <li><hr class="dropdown-divider my-1"></li>
+
+                <!-- Logout -->
+                <li class="mb-0"><a class="dropdown-item py-2 px-3 d-flex align-items-center gap-2 text-danger" href="{% url 'accounts:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+    .navbar-icon-btn {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        border: 1px solid var(--glass-border);
+        background: var(--light-bg);
+        transition: all 0.2s ease;
+    }
+
+    .navbar-icon-btn:hover {
+        background-color: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        border-color: rgba(0,0,0,0.1);
+        color: #3b82f6;
+    }
+
+    .user-dropdown {
+        background-color: var(--light-bg);
+        border: 1px solid var(--glass-border);
+        color: #0f172a;
+        padding: 6px 12px 6px 6px;
+        border-radius: 30px;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+    }
+
+    .user-dropdown:hover {
+        background-color: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        border-color: rgba(0,0,0,0.1);
+    }
+
+    .user-menu-dropdown {
+        border-radius: 12px;
+        min-width: 280px;
+        overflow: hidden;
+        background-color: white;
+    }
+
+    .user-menu-dropdown .dropdown-header {
+        background-color: #f8fafc;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .user-menu-dropdown .dropdown-item {
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: #334155;
+        transition: all 0.2s ease;
+        border-radius: 0;
+    }
+
+    .user-menu-dropdown .dropdown-item:hover {
+        background-color: #f1f5f9;
+        color: #0f172a;
+        transform: translateX(2px);
+    }
+
+    .user-menu-dropdown .dropdown-item.text-danger:hover {
+        background-color: #fee2e2;
+        color: #ef4444;
+    }
+</style>

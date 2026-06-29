@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}Security Settings - AssetGuard{% endblock %}
+
+{% block page_title %}Settings - Security{% endblock %}
+
+{% block content %}
+    <!-- Settings Content -->
+    <div style="width: 100%;">
+        <div class="card glass-card">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="card-title"><i class="fas fa-lock me-2"></i> Security Settings</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- Session Management -->
+                    <div class="security-section mb-4">
+                        <h6 class="section-title"><i class="fas fa-hourglass-end me-2"></i> Session Management</h6>
+                        <div class="form-group">
+                            <label for="session_timeout" class="form-label"><strong>Session Timeout (seconds)</strong></label>
+                            <input type="number" id="session_timeout" name="session_timeout" class="form-control" value="{{ session_timeout }}" min="300" step="60">
+                            <small class="text-muted">Idle time before automatic logout (minimum 5 minutes)</small>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- HTTPS -->
+                    <div class="security-section mb-4">
+                        <h6 class="section-title"><i class="fas fa-shield-alt me-2"></i> HTTPS & Encryption</h6>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="force_https" name="force_https" {% if force_https %}checked{% endif %}>
+                            <label class="form-check-label" for="force_https">
+                                <strong>Force HTTPS</strong>
+                                <small class="d-block text-muted mt-1">Redirect all HTTP traffic to HTTPS</small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- User Registration -->
+                    <div class="security-section mb-4">
+                        <h6 class="section-title"><i class="fas fa-user-plus me-2"></i> User Registration</h6>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="allow_registration" name="allow_registration" {% if allow_registration %}checked{% endif %}>
+                            <label class="form-check-label" for="allow_registration">
+                                <strong>Allow User Registration</strong>
+                                <small class="d-block text-muted mt-1">Allow new users to register without admin approval</small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Security Notice:</strong> Changes to security settings take effect immediately.
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Save Changes
+                        </button>
+                        <a href="{% url 'dashboard:dashboard' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Security Features -->
+        <div class="card glass-card mt-4">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="card-title"><i class="fas fa-check-double me-2"></i> Security Features</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="feature-check">
+                            <div class="feature-icon active">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <div class="feature-name">CSRF Protection</div>
+                                <div class="feature-status">Enabled</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="feature-check">
+                            <div class="feature-icon active">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <div class="feature-name">SQL Injection Protection</div>
+                                <div class="feature-status">Enabled</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="feature-check">
+                            <div class="feature-icon active">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <div class="feature-name">XSS Protection</div>
+                                <div class="feature-status">Enabled</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="feature-check">
+                            <div class="feature-icon active">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <div class="feature-name">Secure Session Cookies</div>
+                                <div class="feature-status">Enabled</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<style>
+    .security-section {
+        background: rgba(59, 130, 246, 0.03);
+        padding: 16px;
+        border-radius: 8px;
+        border: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .section-title {
+        font-weight: 600;
+        color: #0f172a;
+        margin-bottom: 12px;
+        font-size: 14px;
+    }
+
+    .feature-check {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(34, 197, 94, 0.05);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid rgba(34, 197, 94, 0.1);
+    }
+
+    .feature-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+        font-weight: bold;
+    }
+
+    .feature-name {
+        font-weight: 600;
+        font-size: 13px;
+        margin-bottom: 2px;
+    }
+
+    .feature-status {
+        font-size: 12px;
+        color: #64748b;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}Notification Settings - AssetGuard{% endblock %}
+
+{% block page_title %}Settings - Notifications{% endblock %}
+
+{% block content %}
+    <!-- Settings Content -->
+    <div style="width: 100%;">
+        <div class="card glass-card">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="card-title"><i class="fas fa-bell me-2"></i> Notification Settings</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- Email Notifications -->
+                    <div class="notification-section mb-4">
+                        <h6 class="section-title"><i class="fas fa-envelope me-2"></i> Email Notifications</h6>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="enable_email" name="enable_email" {% if enable_email %}checked{% endif %}>
+                            <label class="form-check-label" for="enable_email">
+                                <strong>Enable Email Notifications</strong>
+                                <small class="d-block text-muted mt-1">Send critical alerts and updates via email</small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- System Notifications -->
+                    <div class="notification-section mb-4">
+                        <h6 class="section-title"><i class="fas fa-bell me-2"></i> System Notifications</h6>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="enable_system" name="enable_system" {% if enable_system %}checked{% endif %}>
+                            <label class="form-check-label" for="enable_system">
+                                <strong>Enable System Notifications</strong>
+                                <small class="d-block text-muted mt-1">Show in-app notifications for events</small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Critical Bug Threshold -->
+                    <div class="notification-section mb-4">
+                        <h6 class="section-title"><i class="fas fa-exclamation-circle me-2"></i> Critical Bug Threshold</h6>
+                        <div class="form-group">
+                            <label for="critical_threshold" class="form-label">Days until critical alert</label>
+                            <input type="number" id="critical_threshold" name="critical_threshold" class="form-control" value="{{ critical_threshold }}" min="1" max="30">
+                            <small class="text-muted">Unresolved bugs older than this will be marked as critical</small>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Save Changes
+                        </button>
+                        <a href="{% url 'dashboard:dashboard' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Notification Channels -->
+        <div class="card glass-card mt-4">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="card-title"><i class="fas fa-channels me-2"></i> Notification Channels</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="channel-card">
+                            <div class="channel-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="channel-name">Email</div>
+                            <div class="channel-status"><span class="badge bg-success">Active</span></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="channel-card">
+                            <div class="channel-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="channel-name">In-App</div>
+                            <div class="channel-status"><span class="badge bg-success">Active</span></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="channel-card disabled">
+                            <div class="channel-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="channel-name">SMS</div>
+                            <div class="channel-status"><span class="badge bg-secondary">Disabled</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<style>
+    .notification-section {
+        background: rgba(59, 130, 246, 0.03);
+        padding: 16px;
+        border-radius: 8px;
+        border: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .section-title {
+        font-weight: 600;
+        color: #0f172a;
+        margin-bottom: 12px;
+        font-size: 14px;
+    }
+
+    .channel-card {
+        background: rgba(59, 130, 246, 0.05);
+        border: 1px solid rgba(59, 130, 246, 0.1);
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.2s;
+    }
+
+    .channel-card:hover:not(.disabled) {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.2);
+    }
+
+    .channel-card.disabled {
+        opacity: 0.6;
+    }
+
+    .channel-icon {
+        font-size: 32px;
+        color: #3b82f6;
+        margin-bottom: 12px;
+    }
+
+    .channel-name {
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .channel-status {
+        font-size: 12px;
+    }
+</style>
+{% endblock %}

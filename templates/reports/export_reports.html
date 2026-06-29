@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Export Reports - AssetGuard{% endblock %}
+
+{% block page_title %}Export Reports{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <h2 class="page-title mb-0">Export Reports</h2>
+    <a href="{% url 'reports:reports_index' %}" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back to Reports</a>
+</div>
+
+<div class="row">
+    <!-- Asset Report PDF -->
+    <div class="col-md-6 mb-4">
+        <div class="card glass-card">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="card-title"><i class="fas fa-file-pdf me-2"></i> Asset Report (PDF)</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Export comprehensive asset report with all vulnerabilities as PDF.</p>
+
+                <!-- Asset Selection -->
+                <div class="mb-3">
+                    <label for="asset_select" class="form-label"><strong>Select Asset (Optional)</strong></label>
+                    <select id="asset_select" class="form-control form-control-sm" onchange="updateAssetPdfLink()">
+                        <option value="">All Assets</option>
+                        {% for asset in assets %}
+                        <option value="{{ asset.pk }}">{{ asset.asset_name }} ({{ asset.asset_code }})</option>
+                        {% endfor %}
+                    </select>
+                    <small class="text-muted">Leave blank to include all assets</small>
+                </div>
+
+                <!-- Download Button -->
+                <a id="asset_pdf_link" href="{% url 'reports:export_asset_pdf' %}" class="btn btn-primary btn-block">
+                    <i class="fas fa-download me-1"></i> Download PDF
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vulnerability Report PDF -->
+    <div class="col-md-6 mb-4">
+        <div class="card glass-card">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="card-title"><i class="fas fa-file-pdf me-2"></i> Vulnerability Report (PDF)</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Export detailed vulnerability report with all findings as PDF.</p>
+
+                <!-- Summary -->
+                <div class="mb-3">
+                    <div style="background: rgba(239, 68, 68, 0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.1);">
+                        <small class="text-muted d-block">Total Vulnerabilities</small>
+                        <strong style="color: #ef4444; font-size: 18px;">{{ total_vulnerabilities }}</strong>
+                    </div>
+                </div>
+
+                <!-- Download Button -->
+                <a href="{% url 'reports:export_vuln_pdf' %}" class="btn btn-danger btn-block">
+                    <i class="fas fa-download me-1"></i> Download PDF
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- CSV Export -->
+    <div class="col-md-6 mb-4">
+        <div class="card glass-card">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="card-title"><i class="fas fa-file-csv me-2"></i> Vulnerability Report (CSV)</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Export vulnerability data in CSV format for use in spreadsheets.</p>
+
+                <!-- Features -->
+                <ul style="font-size: 12px; margin: 12px 0;">
+                    <li>All vulnerability data</li>
+                    <li>Compatible with Excel/Sheets</li>
+                    <li>Easy to share</li>
+                </ul>
+
+                <!-- Download Button -->
+                <a href="{% url 'reports:export_csv' %}" class="btn btn-info btn-block">
+                    <i class="fas fa-download me-1"></i> Download CSV
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Card -->
+    <div class="col-md-6 mb-4">
+        <div class="card glass-card">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="card-title"><i class="fas fa-info-circle me-2"></i> Export Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong style="display: block; margin-bottom: 4px;">PDF Reports Include:</strong>
+                    <small class="text-muted d-block">
+                        ✓ Title page with generation date<br>
+                        ✓ Summary statistics<br>
+                        ✓ Detailed data tables<br>
+                        ✓ Professional formatting
+                    </small>
+                </div>
+                <div>
+                    <strong style="display: block; margin-bottom: 4px;">Generated:</strong>
+                    <small class="text-muted">{{ now|date:"M d, Y - H:i" }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateAssetPdfLink() {
+    const assetId = document.getElementById('asset_select').value;
+    const link = document.getElementById('asset_pdf_link');
+    if (assetId) {
+        link.href = "{% url 'reports:export_asset_pdf' %}" + "?asset_id=" + assetId;
+    } else {
+        link.href = "{% url 'reports:export_asset_pdf' %}";
+    }
+}
+</script>
+{% endblock %}

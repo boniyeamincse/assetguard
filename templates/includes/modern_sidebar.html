@@ -1,0 +1,595 @@
+<!-- Modern Admin Sidebar -->
+<div id="sidebar" class="modern-sidebar">
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                </svg>
+            </div>
+            <span class="brand-text">AssetGuard</span>
+        </div>
+        <button id="sidebar-close" class="sidebar-close-btn" aria-label="Close sidebar">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+
+
+
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav">
+        <ul class="nav-list">
+            <!-- Dashboard -->
+            <li class="nav-item">
+                <a href="{% url 'dashboard:dashboard' %}" class="nav-link {% if request.resolver_match.app_name == 'dashboard' %}active{% endif %}">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 9l7-4"/>
+                    </svg>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+
+            <!-- Asset Management -->
+            <li class="nav-item">
+                <button class="nav-link dropdown-toggle" data-toggle="asset-menu">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m0 0l8 4m-8-4v10l8 4m0-10l8-4m-8 4v10"/>
+                    </svg>
+                    <span class="nav-text">Asset Management</span>
+                    <svg class="chevron-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                    </svg>
+                </button>
+                <ul id="asset-menu" class="submenu">
+                    <li><a href="{% url 'assets:asset_list' %}" class="submenu-link {% if request.resolver_match.app_name == 'assets' and request.resolver_match.url_name == 'asset_list' %}active{% endif %}">All Assets</a></li>
+                    {% if user.is_super_admin or user.is_security_team %}
+                    <li><a href="{% url 'assets:asset_create' %}" class="submenu-link {% if request.resolver_match.app_name == 'assets' and request.resolver_match.url_name == 'asset_create' %}active{% endif %}">Create Asset</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+
+            <!-- Vulnerabilities -->
+            <li class="nav-item">
+                <button class="nav-link dropdown-toggle" data-toggle="vuln-menu">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="nav-text">Vulnerabilities</span>
+                    <svg class="chevron-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                    </svg>
+                </button>
+                <ul id="vuln-menu" class="submenu">
+                    <li><a href="{% url 'vulnerabilities:vulnerability_list' %}" class="submenu-link {% if request.resolver_match.app_name == 'vulnerabilities' and request.resolver_match.url_name == 'vulnerability_list' and not request.GET.filter %}active{% endif %}">All Bugs</a></li>
+                    {% if user.is_super_admin or user.is_security_team %}
+                    <li><a href="{% url 'vulnerabilities:vulnerability_create' %}" class="submenu-link {% if request.resolver_match.app_name == 'vulnerabilities' and request.resolver_match.url_name == 'vulnerability_create' %}active{% endif %}">Report Bug</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'vulnerabilities:vulnerability_list' %}?filter=ready_for_retest" class="submenu-link {% if request.GET.filter == 'ready_for_retest' %}active{% endif %}">Retest Pending</a></li>
+                    <li><a href="{% url 'vulnerabilities:vulnerability_list' %}?filter=closed" class="submenu-link {% if request.GET.filter == 'closed' %}active{% endif %}">Closed</a></li>
+                </ul>
+            </li>
+
+            <!-- Reports -->
+            <li class="nav-item">
+                <button class="nav-link dropdown-toggle" data-toggle="reports-menu">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    <span class="nav-text">Reports</span>
+                    <svg class="chevron-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                    </svg>
+                </button>
+                <ul id="reports-menu" class="submenu">
+                    <li><a href="{% url 'reports:asset_report' %}" class="submenu-link {% if request.resolver_match.url_name == 'asset_report' %}active{% endif %}">Asset Report</a></li>
+                    <li><a href="{% url 'reports:vulnerability_report' %}" class="submenu-link {% if request.resolver_match.url_name == 'vulnerability_report' %}active{% endif %}">Bug Report</a></li>
+                    <li><a href="{% url 'reports:overdue_report' %}" class="submenu-link {% if request.resolver_match.url_name == 'overdue_report' %}active{% endif %}">Overdue</a></li>
+                    <li><a href="{% url 'reports:export_csv' %}" class="submenu-link">Export CSV</a></li>
+                </ul>
+            </li>
+
+            <!-- Settings (Admin Only) -->
+            {% if user.is_super_admin %}
+            <li class="nav-item">
+                <button class="nav-link dropdown-toggle" data-toggle="settings-menu">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span class="nav-text">Settings</span>
+                    <svg class="chevron-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                    </svg>
+                </button>
+                <ul id="settings-menu" class="submenu">
+                    <li><a href="{% url 'settings:general_settings' %}" class="submenu-link {% if request.resolver_match.app_name == 'settings' and request.resolver_match.url_name == 'general_settings' %}active{% endif %}">General Settings</a></li>
+                    <li><a href="{% url 'accounts:user_list' %}" class="submenu-link {% if request.resolver_match.app_name == 'accounts' and request.resolver_match.url_name == 'user_list' %}active{% endif %}">User Management</a></li>
+                    <li><a href="{% url 'teams:team_list' %}" class="submenu-link {% if request.resolver_match.app_name == 'teams' %}active{% endif %}">Team Management</a></li>
+                    <li><a href="{% url 'settings:server_monitor' %}" class="submenu-link {% if request.resolver_match.app_name == 'settings' and request.resolver_match.url_name == 'server_monitor' %}active{% endif %}">Server Monitor</a></li>
+                    <li><a href="{% url 'settings:notification_settings' %}" class="submenu-link {% if request.resolver_match.app_name == 'settings' and request.resolver_match.url_name == 'notification_settings' %}active{% endif %}">Notifications</a></li>
+                    <li><a href="{% url 'settings:security_settings' %}" class="submenu-link {% if request.resolver_match.app_name == 'settings' and request.resolver_match.url_name == 'security_settings' %}active{% endif %}">Security</a></li>
+                    <li><a href="{% url 'audit:audit_logs' %}" class="submenu-link {% if request.resolver_match.app_name == 'audit' %}active{% endif %}">Audit Logs</a></li>
+                </ul>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+        <div class="footer-text">AssetGuard v2.0</div>
+    </div>
+</div>
+
+<!-- Sidebar Overlay (for mobile) -->
+<div id="sidebar-overlay" class="sidebar-overlay" style="display: none;"></div>
+
+<!-- Mobile Hamburger Menu Button -->
+<button id="sidebar-toggle" class="sidebar-toggle-btn" aria-label="Toggle sidebar">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+</button>
+
+<style>
+    :root {
+        --primary: #3b82f6;
+        --primary-dark: #1e40af;
+        --primary-light: #60a5fa;
+        --secondary: #10b981;
+        --dark-bg: #0f172a;
+        --dark-sidebar: #1e293b;
+        --dark-card: #334155;
+        --border-color: #475569;
+        --text-primary: #f1f5f9;
+        --text-secondary: #cbd5e1;
+        --text-muted: #94a3b8;
+    }
+
+    .modern-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        background: linear-gradient(180deg, var(--dark-sidebar) 0%, var(--dark-bg) 100%);
+        color: var(--text-primary);
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid var(--border-color);
+        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        overflow-y: auto;
+        transition: transform 0.3s ease;
+    }
+
+    .modern-sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .modern-sidebar::-webkit-scrollbar-thumb {
+        background-color: rgba(148, 163, 184, 0.3);
+        border-radius: 3px;
+    }
+
+    .modern-sidebar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .sidebar-header {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+    }
+
+    .brand-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .brand-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .brand-text {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .sidebar-close-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+    }
+
+    .sidebar-close-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .user-info-card {
+        padding: 16px 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        margin: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .user-info-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .user-details {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .user-menu-trigger {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        flex-shrink: 0;
+        transition: color 0.2s;
+    }
+
+    .user-info-card:hover .user-menu-trigger {
+        color: var(--primary);
+    }
+
+    .user-menu-trigger svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .user-menu-dropdown {
+        position: absolute;
+        top: 132px;
+        right: 20px;
+        background: var(--dark-card);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 8px 0;
+        min-width: 180px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        z-index: 1001;
+    }
+
+    .user-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        color: var(--text-primary);
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .user-menu-item:hover {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--primary-light);
+    }
+
+    .user-menu-item.logout:hover {
+        background: rgba(239, 68, 68, 0.1);
+        color: #f87171;
+    }
+
+    .user-menu-item svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+    }
+
+    .sidebar-nav {
+        flex: 1;
+        padding: 16px 0;
+        overflow-y: auto;
+    }
+
+    .nav-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-item {
+        margin-bottom: 4px;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s;
+        width: 100%;
+        text-align: left;
+        position: relative;
+    }
+
+    .nav-link:hover {
+        color: var(--text-primary);
+        background: rgba(59, 130, 246, 0.08);
+    }
+
+    .nav-link.active {
+        color: var(--primary);
+        background: rgba(59, 130, 246, 0.15);
+        border-left: 3px solid var(--primary);
+        padding-left: 17px;
+    }
+
+    .nav-link.active::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--primary);
+    }
+
+    .nav-icon {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+    }
+
+    .nav-text {
+        flex: 1;
+    }
+
+    .dropdown-toggle {
+        position: relative;
+    }
+
+    .chevron-icon {
+        width: 16px;
+        height: 16px;
+        transition: transform 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    .dropdown-toggle.open .chevron-icon {
+        transform: rotate(180deg);
+    }
+
+    .submenu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .submenu.open {
+        max-height: 500px;
+    }
+
+    .submenu-link {
+        display: block;
+        padding: 10px 20px 10px 52px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 13px;
+        transition: all 0.2s;
+    }
+
+    .submenu-link:hover {
+        color: var(--text-primary);
+        background: rgba(59, 130, 246, 0.08);
+        padding-left: 56px;
+    }
+
+    .submenu-link.active {
+        color: var(--primary);
+        background: rgba(59, 130, 246, 0.1);
+        font-weight: 600;
+    }
+
+    .sidebar-footer {
+        padding: 16px 20px;
+        border-top: 1px solid var(--border-color);
+        text-align: center;
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .sidebar-toggle-btn {
+        display: none;
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        background: var(--dark-sidebar);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        padding: 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        z-index: 1001;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .modern-sidebar {
+            width: 280px;
+            transform: translateX(-100%);
+        }
+
+        .modern-sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-toggle-btn {
+            display: block;
+        }
+
+        .sidebar-close-btn {
+            display: block;
+        }
+
+        .sidebar-overlay.show {
+            display: block !important;
+        }
+    }
+
+    /* Scrollbar styling for Firefox */
+    .modern-sidebar {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarClose = document.getElementById('sidebar-close');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        // Toggle sidebar on mobile
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+            sidebarOverlay.classList.toggle('show');
+        });
+
+        // Close sidebar
+        sidebarClose.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.style.display = 'none';
+            sidebarOverlay.classList.remove('show');
+        });
+
+        // Close sidebar when clicking overlay
+        sidebarOverlay.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.style.display = 'none';
+            sidebarOverlay.classList.remove('show');
+        });
+
+
+
+        // Accordion functionality for dropdowns
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const menuId = this.getAttribute('data-toggle');
+                const menu = document.getElementById(menuId);
+
+                // Close all other menus (accordion behavior)
+                document.querySelectorAll('.submenu.open').forEach(openMenu => {
+                    if (openMenu.id !== menuId) {
+                        openMenu.classList.remove('open');
+                    }
+                });
+
+                document.querySelectorAll('.dropdown-toggle.open').forEach(openToggle => {
+                    if (openToggle !== this) {
+                        openToggle.classList.remove('open');
+                    }
+                });
+
+                // Toggle current menu
+                menu.classList.toggle('open');
+                this.classList.toggle('open');
+            });
+        });
+
+        // Close sidebar on mobile when clicking a link
+        const navLinks = document.querySelectorAll('.nav-link, .submenu-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('open');
+                    sidebarOverlay.style.display = 'none';
+                    sidebarOverlay.classList.remove('show');
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Teams - AssetGuard{% endblock %}
+
+{% block page_title %}Team Management{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <div>
+        <h2 class="page-title mb-0">Team Management</h2>
+        <p class="text-muted small">Organize users into teams for collaboration</p>
+    </div>
+    <a href="{% url 'teams:team_create' %}" class="btn btn-primary rounded-pill px-4">
+        <i class="fas fa-users-plus me-2"></i> Create Team
+    </a>
+</div>
+
+<div class="card glass-card mb-4">
+    <div class="card-header bg-transparent border-bottom">
+        <h5 class="card-title mb-3">Filter & Search</h5>
+        <form method="get" class="row g-3">
+            <div class="col-md-6">
+                <input type="text" name="search" class="form-control" placeholder="Search team name..." value="{{ current_search }}">
+            </div>
+            <div class="col-md-3">
+                <select name="type" class="form-control">
+                    <option value="">All Types</option>
+                    {% for value, display in team_types %}
+                    <option value="{{ value }}" {% if current_type == value %}selected{% endif %}>{{ display }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="status" class="form-control">
+                    <option value="">All Status</option>
+                    {% for value, display in statuses %}
+                    <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>{{ display }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card glass-card">
+    <div class="card-header bg-transparent border-bottom">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-users-cog me-2 text-primary"></i>
+            Total Teams: <span class="badge bg-primary">{{ paginator.count }}</span>
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="text-uppercase text-secondary px-4 py-3" style="font-size: 0.75rem;">Team Name</th>
+                        <th class="text-uppercase text-secondary py-3" style="font-size: 0.75rem;">Type</th>
+                        <th class="text-uppercase text-secondary text-center py-3" style="font-size: 0.75rem;">Members</th>
+                        <th class="text-uppercase text-secondary text-center py-3" style="font-size: 0.75rem;">Status</th>
+                        <th class="text-uppercase text-secondary text-center py-3" style="font-size: 0.75rem;">Created</th>
+                        <th class="text-uppercase text-secondary text-end px-4 py-3" style="font-size: 0.75rem;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in teams %}
+                    <tr>
+                        <td class="px-4">
+                            <div class="d-flex align-items-center">
+                                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin-right: 12px;">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ team.team_name }}</div>
+                                    {% if team.description %}
+                                    <div class="small text-muted">{{ team.description|truncatewords:5 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-info">{{ team.get_team_type_display }}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-light text-dark">{{ team.member_count }}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge {% if team.status == 'active' %}bg-success{% else %}bg-secondary{% endif %}">
+                                {{ team.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="text-center small text-muted">
+                            {{ team.created_at|date:"M d, Y" }}
+                        </td>
+                        <td class="text-end px-4">
+                            <div class="btn-group">
+                                <a href="{% url 'teams:team_detail' team.pk %}" class="btn btn-sm btn-light" title="View">
+                                    <i class="fas fa-eye text-primary"></i>
+                                </a>
+                                <a href="{% url 'teams:team_edit' team.pk %}" class="btn btn-sm btn-light" title="Edit">
+                                    <i class="fas fa-edit text-warning"></i>
+                                </a>
+                                <a href="{% url 'teams:team_delete' team.pk %}" class="btn btn-sm btn-light" title="Delete">
+                                    <i class="fas fa-trash-alt text-danger"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <i class="fas fa-users fa-3x text-muted mb-3" style="display: block; margin-bottom: 15px;"></i>
+                            <p class="text-muted">No teams found</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% if is_paginated %}
+<nav class="mt-4 d-flex justify-content-center">
+    <ul class="pagination shadow-sm">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link text-primary" href="?page=1{% if current_search %}&search={{ current_search }}{% endif %}"><i class="fas fa-angle-double-left"></i></a></li>
+        <li class="page-item"><a class="page-link text-primary" href="?page={{ page_obj.previous_page_number }}{% if current_search %}&search={{ current_search }}{% endif %}"><i class="fas fa-angle-left"></i></a></li>
+        {% endif %}
+
+        <li class="page-item active"><span class="page-link bg-primary border-primary">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link text-primary" href="?page={{ page_obj.next_page_number }}{% if current_search %}&search={{ current_search }}{% endif %}"><i class="fas fa-angle-right"></i></a></li>
+        <li class="page-item"><a class="page-link text-primary" href="?page={{ page_obj.paginator.num_pages }}{% if current_search %}&search={{ current_search }}{% endif %}"><i class="fas fa-angle-double-right"></i></a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications - AssetGuard{% endblock %}
+
+{% block page_title %}Notifications{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 class="page-title mb-0">Notifications</h2>
+    {% if unread_count %}
+    <form method="post" action="{% url 'notifications:mark_all_read' %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-info"><i class="fas fa-check-double me-1"></i> Mark All as Read</button>
+    </form>
+    {% endif %}
+</div>
+
+{% if unread_count %}
+<div class="alert alert-info">
+    <i class="fas fa-bell me-2"></i> You have <strong>{{ unread_count }}</strong> unread notification{{ unread_count|pluralize }}.
+</div>
+{% endif %}
+
+<div style="max-width: 800px;">
+    {% for notification in notifications %}
+    <div class="card {% if not notification.is_read %}border-left-primary{% endif %}" style="margin-bottom: 15px; {% if not notification.is_read %}background-color: #f0f7ff;{% endif %}">
+        <div class="card-body">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <h5 class="card-title" style="margin-bottom: 5px;">
+                        {% if not notification.is_read %}<span class="badge bg-primary me-2">New</span>{% endif %}
+                        {{ notification.title }}
+                    </h5>
+                    <p class="card-text">{{ notification.message }}</p>
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i> {{ notification.created_at|timesince }} ago
+                        {% if notification.read_at %}
+                        | <i class="fas fa-check me-1"></i> Read {{ notification.read_at|timesince }} ago
+                        {% endif %}
+                    </small>
+                </div>
+                <div style="margin-left: 15px;">
+                    <span class="badge badge-{{ notification.priority|lower }}">{{ notification.get_priority_display }}</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                {% if notification.action_url %}
+                <a href="{{ notification.action_url }}" class="btn btn-sm btn-primary"><i class="fas fa-arrow-right me-1"></i> View</a>
+                {% endif %}
+
+                {% if not notification.is_read %}
+                <form method="post" action="{% url 'notifications:mark_read' notification.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-light"><i class="fas fa-check me-1"></i> Mark as Read</button>
+                </form>
+                {% endif %}
+
+                <form method="post" action="{% url 'notifications:delete' notification.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash me-1"></i> Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-bell-slash fa-3x text-muted mb-3" style="display: block; margin-bottom: 15px;"></i>
+            <p class="text-muted">No notifications yet. You're all caught up!</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .badge-critical { background-color: #ef4444; }
+    .badge-high { background-color: #f97316; }
+    .badge-medium { background-color: #eab308; color: #000; }
+    .badge-low { background-color: #22c55e; }
+    .badge-info { background-color: #3b82f6; }
+
+    .card.border-left-primary {
+        border-left: 4px solid #3b82f6 !important;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}General Settings - AssetGuard{% endblock %}
+
+{% block page_title %}Settings - General{% endblock %}
+
+{% block content %}
+    <!-- Settings Content -->
+    <div style="width: 100%;">
+        <div class="card glass-card">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="card-title"><i class="fas fa-sliders-h me-2"></i> General Settings</h5>
+            </div>
+            <div class="card-body">
+                <!-- Branding Section -->
+                <div style="background: rgba(59, 130, 246, 0.03); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 12px; padding: 20px; margin-bottom: 30px;">
+                    <h6 class="mb-3" style="font-weight: 600; color: #0f172a;"><i class="fas fa-image me-2"></i> Organization Branding</h6>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <!-- Company Logo -->
+                        <div style="text-align: center;">
+                            <div style="width: 100%; height: 120px; border-radius: 8px; background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; margin-bottom: 12px;">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div style="font-size: 12px; color: #64748b;">Company Logo</div>
+                            <small class="text-muted d-block mt-1">Upload your company/organization logo</small>
+                        </div>
+
+                        <!-- Current User Profile -->
+                        <div style="text-align: center;">
+                            <div style="width: 120px; height: 120px; border-radius: 8px; background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 48px; margin: 0 auto 12px; overflow: hidden;">
+                                {% if current_user.profile_picture %}
+                                <img src="{{ current_user.profile_picture.url }}" alt="{{ current_user.get_full_name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% else %}
+                                {{ current_user.first_name|first|default:current_user.username|first|upper }}
+                                {% endif %}
+                            </div>
+                            <div style="font-size: 12px; color: #0f172a; font-weight: 600;">{{ current_user.get_full_name|default:current_user.username }}</div>
+                            <small class="text-muted d-block">Admin User</small>
+                            <small class="text-muted d-block">{{ current_user.get_role_display }}</small>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="app_name" class="form-label"><strong>Application Name</strong></label>
+                            <input type="text" id="app_name" name="app_name" class="form-control" value="{{ app_name }}" required>
+                            <small class="text-muted">Name displayed in the system</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="app_version" class="form-label"><strong>Application Version</strong></label>
+                            <input type="text" id="app_version" name="app_version" class="form-control" value="{{ app_version }}" required>
+                            <small class="text-muted">Current version number</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="organization" class="form-label"><strong>Organization Name</strong></label>
+                            <input type="text" id="organization" name="organization" class="form-control" value="{{ organization }}" placeholder="Your organization">
+                            <small class="text-muted">Your company or organization name</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="support_email" class="form-label"><strong>Support Email</strong></label>
+                            <input type="email" id="support_email" name="support_email" class="form-control" value="{{ support_email }}" placeholder="support@example.com">
+                            <small class="text-muted">Support contact email address</small>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Save Changes
+                        </button>
+                        <a href="{% url 'dashboard:dashboard' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

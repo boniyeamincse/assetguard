@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssetGuard - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-header h2 {
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .btn-login {
+            background-color: #20c997;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .btn-login:hover {
+            background-color: #17a084;
+        }
+        .form-control {
+            border: 1px solid #ddd;
+        }
+        .form-control:focus {
+            border-color: #20c997;
+            box-shadow: 0 0 0 0.2rem rgba(32, 201, 151, 0.25);
+        }
+        .error-messages {
+            color: #dc3545;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h2><i class="fas fa-shield-alt"></i> AssetGuard</h2>
+            <p>Cybersecurity Asset & Vulnerability Tracking System</p>
+        </div>
+
+        {% if form.non_field_errors %}
+        <div class="error-messages">
+            {% for error in form.non_field_errors %}
+            <div>{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Username</label>
+                <input type="text" name="username" id="id_username" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_password" class="form-label">Password</label>
+                <input type="password" name="password" id="id_password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-success btn-login">Login</button>
+        </form>
+
+        <hr>
+        <div style="font-size: 12px; color: #666; text-align: center;">
+            <p><strong>Demo Accounts:</strong></p>
+            <p>Admin: admin@demo.com / 123456</p>
+            <p>Security: security@demo.com / 123456</p>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</body>
+</html>

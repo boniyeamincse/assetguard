@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Create{% endif %} User - AssetGuard{% endblock %}
+
+{% block page_title %}{% if form.instance.pk %}Edit{% else %}Create{% endif %} User{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <div>
+        <h2 class="page-title mb-0">{% if form.instance.pk %}Edit User{% else %}Create New User{% endif %}</h2>
+        <p class="text-muted small">{% if form.instance.pk %}Update user information{% else %}Add a new user to the system{% endif %}</p>
+    </div>
+    <a href="{% url 'accounts:user_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i> Back to Users</a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card glass-card">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="card-title">
+                    {% if form.instance.pk %}
+                    <i class="fas fa-user-edit me-2"></i> Edit User Information
+                    {% else %}
+                    <i class="fas fa-user-plus me-2"></i> User Details
+                    {% endif %}
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                            <div class="alert alert-danger small mt-1">{{ form.username.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="alert alert-danger small mt-1">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">{{ form.first_name.label }}</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                            <div class="alert alert-danger small mt-1">{{ form.first_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">{{ form.last_name.label }}</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                            <div class="alert alert-danger small mt-1">{{ form.last_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.role.id_for_label }}" class="form-label">{{ form.role.label }}</label>
+                            {{ form.role }}
+                            {% if form.role.errors %}
+                            <div class="alert alert-danger small mt-1">{{ form.role.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">{{ form.status.label }}</label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                            <div class="alert alert-danger small mt-1">{{ form.status.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">{{ form.phone.label }}</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                            <div class="alert alert-danger small mt-1">{{ form.phone.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.department.id_for_label }}" class="form-label">{{ form.department.label }}</label>
+                            {{ form.department }}
+                            {% if form.department.errors %}
+                            <div class="alert alert-danger small mt-1">{{ form.department.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="{{ form.designation.id_for_label }}" class="form-label">{{ form.designation.label }}</label>
+                            {{ form.designation }}
+                            {% if form.designation.errors %}
+                            <div class="alert alert-danger small mt-1">{{ form.designation.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if form.instance.pk %}
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="{{ form.is_active.id_for_label }}" class="form-check-label">
+                                {{ form.is_active }}
+                                {{ form.is_active.label }}
+                            </label>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">{{ form.password1.label }}</label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                            <div class="alert alert-danger small mt-1">{{ form.password1.errors.0 }}</div>
+                            {% endif %}
+                            <small class="text-muted d-block mt-1">{{ form.password1.help_text|safe }}</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">{{ form.password2.label }}</label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                            <div class="alert alert-danger small mt-1">{{ form.password2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <hr class="my-4">
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> {% if form.instance.pk %}Update User{% else %}Create User{% endif %}
+                        </button>
+                        <a href="{% url 'accounts:user_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if not form.instance.pk %}
+    <div class="col-md-4">
+        <div class="card glass-card">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="card-title"><i class="fas fa-info-circle me-2"></i> Roles Information</h5>
+            </div>
+            <div class="card-body small">
+                <div class="mb-3">
+                    <p class="mb-1"><strong>Super Admin</strong></p>
+                    <p class="text-muted">Full system access, manage users and settings</p>
+                </div>
+                <div class="mb-3">
+                    <p class="mb-1"><strong>Security Team</strong></p>
+                    <p class="text-muted">Report bugs, manage vulnerabilities</p>
+                </div>
+                <div class="mb-3">
+                    <p class="mb-1"><strong>Software Team</strong></p>
+                    <p class="text-muted">Fix assigned bugs, mark in progress</p>
+                </div>
+                <div class="mb-3">
+                    <p class="mb-1"><strong>Project Owner</strong></p>
+                    <p class="text-muted">Monitor assets, manage project teams</p>
+                </div>
+                <div>
+                    <p class="mb-1"><strong>Management Viewer</strong></p>
+                    <p class="text-muted">View-only access to reports and dashboards</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

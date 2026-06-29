@@ -1,0 +1,159 @@
+/* AssetGuard Custom Styles */
+
+:root {
+    --primary-color: #20c997;
+    --dark-sidebar: #212529;
+    --critical: #dc3545;
+    --high: #fd7e14;
+    --medium: #ffc107;
+    --low: #198754;
+    --info: #0d6efd;
+}
+
+/* Form Improvements */
+.form-control, .form-select {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(32, 201, 151, 0.25);
+}
+
+/* Badge Styles */
+.badge-critical {
+    background-color: var(--critical);
+}
+
+.badge-high {
+    background-color: var(--high);
+}
+
+.badge-medium {
+    background-color: var(--medium);
+    color: #000;
+}
+
+.badge-low {
+    background-color: var(--low);
+}
+
+.badge-info {
+    background-color: var(--info);
+}
+
+/* Table Styles */
+table {
+    font-size: 14px;
+}
+
+table thead {
+    background-color: #f8f9fa;
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #17a084;
+    border-color: #17a084;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    border-bottom: 1px solid #ddd;
+    background-color: #f8f9fa;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 20px;
+}
+
+.page-link {
+    color: var(--primary-color);
+}
+
+.page-link:hover {
+    color: #17a084;
+    background-color: #e9ecef;
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Utility Classes */
+.text-critical {
+    color: var(--critical);
+}
+
+.text-high {
+    color: var(--high);
+}
+
+.text-medium {
+    color: var(--medium);
+}
+
+.text-low {
+    color: var(--low);
+}
+
+/* Alert Customization */
+.alert {
+    border-radius: 5px;
+    border: none;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        position: relative;
+        min-height: auto;
+        margin-bottom: 20px;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    body {
+        flex-direction: column;
+    }
+
+    table {
+        font-size: 12px;
+    }
+}

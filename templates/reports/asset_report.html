@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Asset Report - AssetGuard{% endblock %}
+
+{% block page_title %}Asset Report{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <h2 class="page-title mb-0">Asset Report</h2>
+    <a href="{% url 'reports:reports_index' %}" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Back to Reports</a>
+</div>
+
+<!-- Summary Stats -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card glass-card">
+            <div class="card-body">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <small class="text-muted d-block">Total Assets</small>
+                        <h3 style="margin: 8px 0 0 0; color: #3b82f6; font-weight: 700;">{{ assets.count }}</h3>
+                    </div>
+                    <i class="fas fa-server" style="font-size: 32px; color: #3b82f6; opacity: 0.2;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card glass-card">
+            <div class="card-body">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <small class="text-muted d-block">Critical Assets</small>
+                        <h3 style="margin: 8px 0 0 0; color: #ef4444; font-weight: 700;">{{ assets|dictsort:"criticality"|length }}</h3>
+                    </div>
+                    <i class="fas fa-exclamation-circle" style="font-size: 32px; color: #ef4444; opacity: 0.2;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card glass-card">
+            <div class="card-body">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <small class="text-muted d-block">Asset Types</small>
+                        <h3 style="margin: 8px 0 0 0; color: #10b981; font-weight: 700;">5</h3>
+                    </div>
+                    <i class="fas fa-cube" style="font-size: 32px; color: #10b981; opacity: 0.2;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card glass-card">
+            <div class="card-body">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <small class="text-muted d-block">Last Updated</small>
+                        <div style="margin-top: 8px; font-size: 12px; color: #0f172a; font-weight: 500;">Today</div>
+                    </div>
+                    <i class="fas fa-clock" style="font-size: 32px; color: #8b5cf6; opacity: 0.2;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assets Table -->
+<div class="card glass-card">
+    <div class="card-header bg-transparent border-bottom">
+        <h5 class="card-title"><i class="fas fa-table me-2"></i> All Assets</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead style="background: rgba(59, 130, 246, 0.05);">
+                    <tr>
+                        <th style="color: #0f172a; font-weight: 600; padding: 16px;">Asset Code</th>
+                        <th style="color: #0f172a; font-weight: 600; padding: 16px;">Name</th>
+                        <th style="color: #0f172a; font-weight: 600; padding: 16px;">Type</th>
+                        <th style="color: #0f172a; font-weight: 600; padding: 16px;">Criticality</th>
+                        <th style="color: #0f172a; font-weight: 600; padding: 16px;">Vulnerabilities</th>
+                        <th style="color: #0f172a; font-weight: 600; padding: 16px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for asset in assets %}
+                    <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                        <td style="padding: 16px;"><span class="badge bg-light text-dark">{{ asset.asset_code }}</span></td>
+                        <td style="padding: 16px; font-weight: 500;">{{ asset.asset_name }}</td>
+                        <td style="padding: 16px;">{{ asset.get_asset_type_display }}</td>
+                        <td style="padding: 16px;">
+                            <span class="badge {% if asset.criticality == 'critical' %}bg-danger{% elif asset.criticality == 'high' %}bg-warning text-dark{% elif asset.criticality == 'medium' %}bg-info{% else %}bg-success{% endif %}">
+                                {{ asset.get_criticality_display }}
+                            </span>
+                        </td>
+                        <td style="padding: 16px;">
+                            <span class="badge bg-secondary">{{ asset.vulnerability_set.count }}</span>
+                        </td>
+                        <td style="padding: 16px;">
+                            <a href="{% url 'assets:asset_detail' asset.pk %}" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i> View</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #64748b;">
+                            <i class="fas fa-inbox" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
+                            No assets found
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: rgba(59, 130, 246, 0.05);
+    }
+</style>
+{% endblock %}

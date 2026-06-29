@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Create{% endif %} Asset - AssetGuard{% endblock %}
+
+{% block content %}
+<style>
+    /* Cyber-Enterprise Form Styles */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 25px;
+        height: 100%;
+    }
+    .glass-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    }
+    .card-header-custom {
+        background: linear-gradient(135deg, #20c997 0%, #17a084 100%);
+        color: white;
+        border-radius: 12px 12px 0 0 !important;
+        padding: 16px 20px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 4px 15px rgba(32, 201, 151, 0.2);
+    }
+    .card-header-custom.tech {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.2);
+    }
+    .card-header-custom.owner {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    }
+    .card-body {
+        padding: 25px;
+    }
+    .form-group-custom label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .form-group-custom label i {
+        color: #20c997;
+        width: 16px;
+        text-align: center;
+    }
+    .owner .form-group-custom label i { color: #667eea; }
+    .tech .form-group-custom label i { color: #4facfe; }
+    
+    .form-control, .form-select {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+        background-color: #f8fafc;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #20c997;
+        box-shadow: 0 0 0 0.25rem rgba(32, 201, 151, 0.15);
+        background-color: #fff;
+    }
+    textarea.form-control {
+        min-height: 100px;
+    }
+    .action-buttons {
+        background: white;
+        padding: 20px 25px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+        align-items: center;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    .btn-cyber {
+        padding: 12px 28px;
+        font-weight: 600;
+        border-radius: 8px;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-cyber-primary {
+        background: linear-gradient(135deg, #20c997 0%, #17a084 100%);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 15px rgba(32, 201, 151, 0.3);
+    }
+    .btn-cyber-primary:hover {
+        background: linear-gradient(135deg, #17a084 0%, #12826a 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(32, 201, 151, 0.4);
+    }
+    .btn-cyber-secondary {
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+    }
+    .btn-cyber-secondary:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+        transform: translateY(-2px);
+    }
+    .page-title {
+        color: #1e293b;
+        font-weight: 700;
+    }
+    .page-title i {
+        background: linear-gradient(135deg, #20c997 0%, #4facfe 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <h2 class="page-title mb-0">
+        <i class="fas {% if form.instance.pk %}fa-edit{% else %}fa-plus-circle{% endif %} me-2"></i>
+        {% if form.instance.pk %}Edit Asset: {{ form.instance.asset_name }}{% else %}Register New Asset{% endif %}
+    </h2>
+</div>
+
+<form method="post" id="assetForm">
+    {% csrf_token %}
+    
+    <div class="row align-items-stretch">
+        <!-- Basic Information -->
+        <div class="col-xl-4 col-lg-6 mb-4">
+            <div class="glass-card">
+                <div class="card-header-custom">
+                    <i class="fas fa-info-circle"></i> Basic Information
+                </div>
+                <div class="card-body">
+                    <div class="form-group-custom mb-4">
+                        <label for="{{ form.asset_name.id_for_label }}"><i class="fas fa-tag"></i> Asset Name</label>
+                        {{ form.asset_name }}
+                    </div>
+                    <div class="form-group-custom mb-4">
+                        <label for="{{ form.domain.id_for_label }}"><i class="fas fa-globe"></i> Domain</label>
+                        {{ form.domain }}
+                    </div>
+                    <div class="form-group-custom mb-4">
+                        <label for="{{ form.request_id.id_for_label }}"><i class="fas fa-id-badge"></i> Request ID</label>
+                        {{ form.request_id }}
+                    </div>
+                    <div class="form-group-custom mb-4">
+                        <label for="{{ form.asset_type.id_for_label }}"><i class="fas fa-layer-group"></i> Asset Type</label>
+                        {{ form.asset_type }}
+                    </div>
+                    <div class="form-group-custom mb-4">
+                        <label for="{{ form.criticality.id_for_label }}"><i class="fas fa-exclamation-triangle"></i> Criticality</label>
+                        {{ form.criticality }}
+                    </div>
+                    <div class="form-group-custom mb-4">
+                        <label for="{{ form.status.id_for_label }}"><i class="fas fa-check-circle"></i> Status</label>
+                        {{ form.status }}
+                    </div>
+                    <div class="form-group-custom mb-2">
+                        <label for="{{ form.description.id_for_label }}"><i class="fas fa-align-left"></i> Description</label>
+                        {{ form.description }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ownership & Teams -->
+        <div class="col-xl-4 col-lg-6 mb-4 owner">
+            <div class="glass-card">
+                <div class="card-header-custom owner">
+                    <i class="fas fa-users"></i> Ownership & Teams
+                </div>
+                <div class="card-body">
+                    <div class="form-group-custom mb-4">
+                        <label for="{{ form.business_owner.id_for_label }}"><i class="fas fa-user-tie"></i> Business Owner</label>
+                        {{ form.business_owner }}
+                    </div>
+                    <div class="form-group-custom mb-4">
+                        <label for="{{ form.project_owner.id_for_label }}"><i class="fas fa-user-shield"></i> Project Owner</label>
+                        {{ form.project_owner }}
+                    </div>
+                    <div class="form-group-custom mb-4">
+                        <label for="{{ form.software_team.id_for_label }}"><i class="fas fa-code"></i> Software Team</label>
+                        {{ form.software_team }}
+                    </div>
+                    <div class="form-group-custom mb-2">
+                        <label for="{{ form.security_team.id_for_label }}"><i class="fas fa-shield-alt"></i> Security Team</label>
+                        {{ form.security_team }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Details -->
+        <div class="col-xl-4 col-lg-12 mb-4 tech">
+            <div class="glass-card">
+                <div class="card-header-custom tech">
+                    <i class="fas fa-server"></i> Technical Details
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-xl-12">
+                            <div class="form-group-custom mb-4">
+                                <label for="{{ form.production_url.id_for_label }}"><i class="fas fa-globe"></i> Production URL</label>
+                                {{ form.production_url }}
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xl-12">
+                            <div class="form-group-custom mb-4">
+                                <label for="{{ form.staging_url.id_for_label }}"><i class="fas fa-flask"></i> Staging URL</label>
+                                {{ form.staging_url }}
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xl-12">
+                            <div class="form-group-custom mb-4">
+                                <label for="{{ form.repository_url.id_for_label }}"><i class="fab fa-github"></i> Repository URL</label>
+                                {{ form.repository_url }}
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xl-12">
+                            <div class="form-group-custom mb-4">
+                                <label for="{{ form.server_ip.id_for_label }}"><i class="fas fa-network-wired"></i> Server IP</label>
+                                {{ form.server_ip }}
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xl-12">
+                            <div class="form-group-custom mb-4">
+                                <label for="{{ form.database_name.id_for_label }}"><i class="fas fa-database"></i> Database Name</label>
+                                {{ form.database_name }}
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xl-12">
+                            <div class="form-group-custom mb-2">
+                                <label for="{{ form.technology_stack.id_for_label }}"><i class="fas fa-layer-group"></i> Technology Stack</label>
+                                {{ form.technology_stack }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Display -->
+    {% if form.errors %}
+    <div class="alert alert-danger shadow-sm rounded-3 mb-4 border-0 border-start border-danger border-4">
+        <strong class="text-danger"><i class="fas fa-exclamation-circle me-2"></i>Please correct the following errors:</strong>
+        <ul class="mb-0 mt-2 text-danger">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li><strong>{{ field.label }}</strong>: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="action-buttons mt-2 mb-5">
+        <a href="{% url 'assets:asset_list' %}" class="btn btn-cyber btn-cyber-secondary">
+            <i class="fas fa-times"></i> Cancel
+        </a>
+        <button type="submit" class="btn btn-cyber btn-cyber-primary">
+            <i class="fas fa-save"></i> {% if form.instance.pk %}Update Asset{% else %}Save Asset{% endif %}
+        </button>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Add Bootstrap classes to all form inputs automatically
+        const inputs = document.querySelectorAll('#assetForm input:not([type="hidden"]):not([type="checkbox"]), #assetForm textarea');
+        inputs.forEach(input => {
+            input.classList.add('form-control');
+        });
+        
+        const selects = document.querySelectorAll('#assetForm select');
+        selects.forEach(select => {
+            select.classList.add('form-select');
+        });
+
+        // Add subtle focus animations
+        const allFields = document.querySelectorAll('.form-control, .form-select');
+        allFields.forEach(field => {
+            field.addEventListener('focus', function() {
+                const parent = this.closest('.form-group-custom');
+                if(parent) {
+                    parent.style.transform = 'translateX(5px)';
+                    parent.style.transition = 'transform 0.3s ease';
+                }
+            });
+            field.addEventListener('blur', function() {
+                const parent = this.closest('.form-group-custom');
+                if(parent) {
+                    parent.style.transform = 'translateX(0)';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

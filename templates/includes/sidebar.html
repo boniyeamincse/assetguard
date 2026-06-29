@@ -1,0 +1,72 @@
+<div class="sidebar">
+    <h4 style="margin-bottom: 24px;"><i class="fas fa-shield-alt"></i> AssetGuard</h4>
+
+
+    <ul class="nav flex-column" id="sidebarAccordion">
+        <!-- Dashboard (No Submenu) -->
+        <li class="nav-item">
+            <a href="{% url 'dashboard:dashboard' %}" class="nav-link {% if request.resolver_match.app_name == 'dashboard' %}active{% endif %}">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+        </li>
+
+        <!-- Asset Management -->
+        <li class="nav-item">
+            <a href="#assetsMenu" class="nav-link {% if request.resolver_match.app_name == 'assets' %}active{% endif %}" data-bs-toggle="collapse" aria-expanded="{% if request.resolver_match.app_name == 'assets' %}true{% else %}false{% endif %}">
+                <i class="fas fa-cube"></i> Asset Management
+                <i class="fas fa-chevron-down chevron-icon"></i>
+            </a>
+            <ul class="collapse list-unstyled submenu {% if request.resolver_match.app_name == 'assets' %}show{% endif %}" id="assetsMenu" data-bs-parent="#sidebarAccordion">
+                <li><a href="{% url 'assets:asset_list' %}" class="{% if request.resolver_match.app_name == 'assets' and request.resolver_match.url_name == 'asset_list' %}active{% endif %}">All Assets</a></li>
+                {% if user.is_super_admin or user.is_security_team %}
+                <li><a href="{% url 'assets:asset_create' %}" class="{% if request.resolver_match.app_name == 'assets' and request.resolver_match.url_name == 'asset_create' %}active{% endif %}">Create Asset</a></li>
+                {% endif %}
+            </ul>
+        </li>
+
+        <!-- Vulnerabilities -->
+        <li class="nav-item">
+            <a href="#vulnsMenu" class="nav-link {% if request.resolver_match.app_name == 'vulnerabilities' %}active{% endif %}" data-bs-toggle="collapse" aria-expanded="{% if request.resolver_match.app_name == 'vulnerabilities' %}true{% else %}false{% endif %}">
+                <i class="fas fa-bug"></i> Vulnerabilities
+                <i class="fas fa-chevron-down chevron-icon"></i>
+            </a>
+            <ul class="collapse list-unstyled submenu {% if request.resolver_match.app_name == 'vulnerabilities' %}show{% endif %}" id="vulnsMenu" data-bs-parent="#sidebarAccordion">
+                <li><a href="{% url 'vulnerabilities:vulnerability_list' %}" class="{% if request.resolver_match.app_name == 'vulnerabilities' and request.resolver_match.url_name == 'vulnerability_list' and not request.GET.filter %}active{% endif %}">All Bugs</a></li>
+                {% if user.is_super_admin or user.is_security_team %}
+                <li><a href="{% url 'vulnerabilities:vulnerability_create' %}" class="{% if request.resolver_match.app_name == 'vulnerabilities' and request.resolver_match.url_name == 'vulnerability_create' %}active{% endif %}">Report Bug</a></li>
+                {% endif %}
+                <li><a href="{% url 'vulnerabilities:vulnerability_list' %}?filter=ready_for_retest" class="{% if request.GET.filter == 'ready_for_retest' %}active{% endif %}">Retest Pending</a></li>
+                <li><a href="{% url 'vulnerabilities:vulnerability_list' %}?filter=closed" class="{% if request.GET.filter == 'closed' %}active{% endif %}">Closed</a></li>
+            </ul>
+        </li>
+
+        <!-- Reports -->
+        <li class="nav-item">
+            <a href="#reportsMenu" class="nav-link {% if request.resolver_match.app_name == 'reports' %}active{% endif %}" data-bs-toggle="collapse" aria-expanded="{% if request.resolver_match.app_name == 'reports' %}true{% else %}false{% endif %}">
+                <i class="fas fa-chart-pie"></i> Reports
+                <i class="fas fa-chevron-down chevron-icon"></i>
+            </a>
+            <ul class="collapse list-unstyled submenu {% if request.resolver_match.app_name == 'reports' %}show{% endif %}" id="reportsMenu" data-bs-parent="#sidebarAccordion">
+                <li><a href="{% url 'reports:asset_report' %}" class="{% if request.resolver_match.url_name == 'asset_report' %}active{% endif %}">Asset Report</a></li>
+                <li><a href="{% url 'reports:vulnerability_report' %}" class="{% if request.resolver_match.url_name == 'vulnerability_report' %}active{% endif %}">Bug Report</a></li>
+                <li><a href="{% url 'reports:overdue_report' %}" class="{% if request.resolver_match.url_name == 'overdue_report' %}active{% endif %}">Overdue</a></li>
+                <li><a href="{% url 'reports:export_csv' %}">Export CSV</a></li>
+            </ul>
+        </li>
+
+        {% if user.is_super_admin %}
+        <!-- Administration -->
+        <li class="nav-item">
+            <a href="#adminMenu" class="nav-link {% if request.resolver_match.app_name in 'teams,accounts,audit' %}active{% endif %}" data-bs-toggle="collapse" aria-expanded="{% if request.resolver_match.app_name in 'teams,accounts,audit' %}true{% else %}false{% endif %}">
+                <i class="fas fa-cogs"></i> Administration
+                <i class="fas fa-chevron-down chevron-icon"></i>
+            </a>
+            <ul class="collapse list-unstyled submenu {% if request.resolver_match.app_name in 'teams,accounts,audit' %}show{% endif %}" id="adminMenu" data-bs-parent="#sidebarAccordion">
+                <li><a href="{% url 'teams:team_list' %}" class="{% if request.resolver_match.app_name == 'teams' %}active{% endif %}">Teams</a></li>
+                <li><a href="{% url 'accounts:user_list' %}" class="{% if request.resolver_match.url_name == 'user_list' %}active{% endif %}">Users</a></li>
+                <li><a href="{% url 'audit:audit_logs' %}" class="{% if request.resolver_match.app_name == 'audit' %}active{% endif %}">Audit Logs</a></li>
+            </ul>
+        </li>
+        {% endif %}
+    </ul>
+</div>
